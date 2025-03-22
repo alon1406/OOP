@@ -21,12 +21,11 @@ public class Seller extends User {
         return products;
     }
 
-    public void addProduct (Product p1) {
+    public void addProduct(Product p1) {
         if (products.length == numOfProducts) {
             if (products.length == 0) {
                 products = Arrays.copyOf(products, 1);
-            }
-            else {
+            } else {
                 products = Arrays.copyOf(products, products.length * SIZE_INCREASE);
             }
         }
@@ -41,7 +40,7 @@ public class Seller extends User {
         }
         sb.append("\nSeller products: \n");
         for (int i = 0; i < numOfProducts; i++) {
-            sb.append("   ").append(i+1).append(") ").append(products[i].toString()).append('\n');
+            sb.append("   ").append(i + 1).append(") ").append(products[i].toString()).append('\n');
         }
         return sb.toString();
     }

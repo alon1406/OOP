@@ -1,6 +1,7 @@
 package Models;
 
 import Enums.Category;
+
 import java.util.Arrays;
 
 public class Categories {
@@ -62,8 +63,7 @@ public class Categories {
         if (category.length == numOfProductsInCategory) {
             if (category.length == 0) {
                 category = Arrays.copyOf(category, 1);
-            }
-            else {
+            } else {
                 category = Arrays.copyOf(category, category.length * SIZE_INCREASE);
             }
         }
@@ -71,7 +71,7 @@ public class Categories {
         return category;
     }
 
-    public static String categoriesByNames () {
+    public static String categoriesByNames() {
         Category[] allCategories = Category.values();
         StringBuilder sb = new StringBuilder("\nCategory list:\n--------------\n");
         for (Category category : allCategories) {

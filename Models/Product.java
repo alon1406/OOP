@@ -2,6 +2,8 @@ package Models;
 
 import Enums.Category;
 
+import java.util.Objects;
+
 public class Product {
     private final String productName;
     private final double productPrice;
@@ -16,6 +18,10 @@ public class Product {
         this.category = category;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
     public Product(Product other) {
         this.productName = other.productName;
         this.productPrice = other.productPrice;
@@ -25,6 +31,19 @@ public class Product {
 
     public Category getCategory() {
         return category;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return Objects.equals(productName.toLowerCase(), product.productName.toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productName, productPrice);
     }
 
     public double getProductPrice() {
@@ -38,4 +57,6 @@ public class Product {
                 ", Product id: " + id +
                 ", Product category: " + category;
     }
+
+
 }

@@ -1,11 +1,12 @@
 
-
 import Enums.Category;
+import Managers.Factory;
 import Managers.Manager;
 import Models.Address;
 import Models.Categories;
+import Models.Product;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     private static Scanner sc;
@@ -70,8 +71,26 @@ public class Main {
                 case 9:
                     case9();
                     break;
+                case 10:
+                    case10();
+                    break;
+                case 99:
+                    q15();
+                    break;
+                case 100:
+                    q16();
+                    break;
+                case 101:
+                    q17();
+                    break;
+                case 102:
+                    q18();
+                    break;
+                case 103:
+                    q19();
+                    break;
                 default:
-                    System.out.println("\nPlease enter a valid choice in range 0-9!");
+                    System.out.println("\nPlease enter a valid choice in range 0-9, 99-103!");
                     break;
             }
         } while (choice != 0);
@@ -89,6 +108,12 @@ public class Main {
         System.out.println("7) Seller's details");
         System.out.println("8) Product's by category");
         System.out.println("9) Replace current cart with cart from history");
+        System.out.println("10) Run Tests");
+        System.out.println("99)  Q15");
+        System.out.println("100) Q16");
+        System.out.println("101) Q17:");
+        System.out.println("102) Q18:");
+        System.out.println("103) Q19:");
         System.out.println("Please enter your choice: ");
     }
 
@@ -146,12 +171,12 @@ public class Main {
         System.out.println("State: (Enter -1 to return main menu)");
         String state = sc.next();
         if (state.equals("-1")) return;
-        Address address = new Address (street, houseNum, city, state);
+        Address address = new Address(street, houseNum, city, state);
         manager.addBuyer(username, password, address);
         System.out.println("Buyer added successfully.");
     }
 
-    public static void case3 () {
+    public static void case3() {
         if (manager.getNumberOfSellers() == 0) {
             System.out.println("Haven't sellers yet, cannot be proceed. return to Menu.");
             return;
@@ -210,7 +235,7 @@ public class Main {
         System.out.println("Product added successfully.");
     }
 
-    public static void case4 () {
+    public static void case4() {
         if (manager.getNumberOfBuyers() == 0) {
             System.out.println("Haven't buyers yet, cannot be proceed. return to Menu.");
             return;
@@ -238,11 +263,11 @@ public class Main {
             }
         } while (message != null);
         int productIndex = Integer.parseInt(input);
-        manager.addProductBuyer(buyerIndex,sellerIndex,productIndex - 1);
+        manager.addProductBuyer(buyerIndex, sellerIndex, productIndex - 1);
         System.out.println("Product added successfully to cart.");
     }
 
-    public static void case5 () {
+    public static void case5() {
         if (manager.getNumberOfBuyers() == 0) {
             System.out.println("Haven't buyers yet, cannot be proceed. return to Menu.");
             return;
@@ -253,7 +278,7 @@ public class Main {
         System.out.println(manager.pay(buyerIndex));
     }
 
-    public static void case9 () {
+    public static void case9() {
         if (manager.getNumberOfBuyers() == 0) {
             System.out.println("Haven't buyers yet, cannot be proceed. return to Menu.");
             return;
@@ -268,19 +293,78 @@ public class Main {
         System.out.println("Please choose cart number from history carts:");
         System.out.println("If you have products in your current cart - they will be replaced. (Enter -1 to return main menu)");
         do {
-             input = sc.next();
-             if (input.equals("-1")) return;
-             message = manager.isValidHistoryCartIndex(input, buyerIndex);
-             if (message != null) {
-                 System.out.println(message);
-             }
+            input = sc.next();
+            if (input.equals("-1")) return;
+            message = manager.isValidHistoryCartIndex(input, buyerIndex);
+            if (message != null) {
+                System.out.println(message);
+            }
         } while (message != null);
         int historyCartIndex = Integer.parseInt(input);
         manager.replaceCarts(historyCartIndex - 1, buyerIndex);
         System.out.println("Your current cart update successfully.");
     }
 
-    public static int chooseSeller () {
+    public static void case10() {
+        Factory f = new Factory();
+        f.tests(manager);
+    }
+
+    public static void q15() {
+        if (manager.getallProducts().length != 0)
+            manager.printArray();
+        else {
+            System.out.println("Nothing to use please enter products");
+        }
+    }
+
+    public static void q16() {
+        if (manager.getallProducts().length != 0) {
+            Map<String, Integer> map = manager.toLinkedHashMap();
+            map.forEach((String, Integer) -> {
+                System.out.println(String.format("%-4s........%4d", String, map.get(String)));
+            });
+        } else {
+            System.out.println("Nothing to use please enter products");
+        }
+
+    }
+
+    public static void q17() {
+        if (manager.getallProducts().length != 0) {
+            System.out.print("Please enter the string: ");
+            String name = sc.nextLine().toLowerCase();
+            Map<String, Integer> map = manager.toLinkedHashMap();
+            if (map.containsKey(name)) {
+                System.out.println("The number of times '" + name + "' appears in the original array is " + map.get(name));
+            } else System.out.println("the '" + name + "' is not exist");
+        } else {
+            System.out.println("Nothing to use please enter products");
+        }
+    }
+
+    public static void q18() {
+        if (manager.getallProducts().length != 0) {
+            Map<String, Integer> map = manager.toLinkedHashMap();
+            ArrayList<?> arr = manager.toArrayList(map);
+            manager.printByListIterator(arr);
+        } else {
+            System.out.println("Nothing to use please enter products");
+        }
+    }
+
+    public static void q19() {
+        if (manager.getallProducts().length != 0) {
+            SortedSet<? extends String> sortSet = manager.ToTreeSet();
+            for (String s : sortSet)
+                System.out.println(s);
+
+        } else {
+            System.out.println("Nothing to use please enter products");
+        }
+    }
+
+    public static int chooseSeller() {
         System.out.println(manager.sellersNames());
         System.out.println("Please choose seller from the list above: (Enter -1 to return main menu)");
         while (true) {
@@ -296,7 +380,7 @@ public class Main {
         return Integer.parseInt(input) - 1;
     }
 
-    public static int chooseBuyer () {
+    public static int chooseBuyer() {
         System.out.println(manager.buyersNames());
         System.out.println("Please choose buyer from the list above: (Enter -1 to return main menu)");
         while (true) {
@@ -311,5 +395,6 @@ public class Main {
         }
         return Integer.parseInt(input) - 1;
     }
+
 }
 

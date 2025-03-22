@@ -7,9 +7,7 @@ import Enums.ExceptionsMessages;
 import Exceptions.*;
 import Models.*;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.InputMismatchException;
+import java.util.*;
 
 public class Manager implements Manageable {
     private final int SIZE_INCREASE = 2;
@@ -20,6 +18,9 @@ public class Manager implements Manageable {
     private final Categories categoriesArrays;
     private final Comparator<Seller> comparatorSeller;
     private final Comparator<Buyer> comparatorBuyer;
+    private Product[] allProducts;
+    private int logicProductsSize = 0;
+
 
     public Manager() {
         buyers = new Buyer[0];
@@ -27,6 +28,13 @@ public class Manager implements Manageable {
         categoriesArrays = new Categories();
         comparatorSeller = new CompareSellersByProductsNumber();
         comparatorBuyer = new CompareBuyersByName();
+        allProducts = new Product[0];
+
+    }
+
+
+    public Product[] getallProducts() {
+        return allProducts;
     }
 
     public Seller[] getSellers() {
@@ -45,10 +53,15 @@ public class Manager implements Manageable {
         return numberOfBuyers;
     }
 
+    public int getLogicProductsSize() {
+        return logicProductsSize;
+    }
+
     public String validProductIndex(int sellerIndex, String productIndexInput) {
         try {
             int productIndex = Integer.parseInt(productIndexInput);
-            if (productIndex <= 0 || productIndex > sellers[sellerIndex].getNumOfProducts()) throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_PRODUCT_INDEX.getExceptionMessage());
+            if (productIndex <= 0 || productIndex > sellers[sellerIndex].getNumOfProducts())
+                throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_PRODUCT_INDEX.getExceptionMessage());
         } catch (NumberFormatException e) {
             return ExceptionsMessages.INVALID_NUMBER_CHOICE.getExceptionMessage();
         } catch (IndexOutOfBoundsException e) {
@@ -60,8 +73,9 @@ public class Manager implements Manageable {
     public String validPrice(String priceInput) {
         try {
             double price = Double.parseDouble(priceInput);
-            if (price <= 0) throw new InputMismatchException(ExceptionsMessages.INVALID_PRICE_VALUE.getExceptionMessage());
-        } catch (NullPointerException e){
+            if (price <= 0)
+                throw new InputMismatchException(ExceptionsMessages.INVALID_PRICE_VALUE.getExceptionMessage());
+        } catch (NullPointerException e) {
             return ExceptionsMessages.PRICE_EMPTY.getExceptionMessage();
         } catch (NumberFormatException e) {
             return ExceptionsMessages.INVALID_PRICE_INPUT.getExceptionMessage();
@@ -74,7 +88,8 @@ public class Manager implements Manageable {
     public String validCategoryIndex(String categoryInput) {
         try {
             int categoryChoice = Integer.parseInt(categoryInput);
-            if (categoryChoice <= 0 || categoryChoice > Category.values().length) throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_CATEGORY_INDEX.getExceptionMessage());
+            if (categoryChoice <= 0 || categoryChoice > Category.values().length)
+                throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_CATEGORY_INDEX.getExceptionMessage());
         } catch (NumberFormatException e) {
             return ExceptionsMessages.INVALID_NUMBER_CHOICE.getExceptionMessage();
         } catch (IndexOutOfBoundsException e) {
@@ -83,14 +98,14 @@ public class Manager implements Manageable {
         return null;
     }
 
-    public String isExistSeller (String name) {
+    public String isExistSeller(String name) {
         for (int i = 0; i < numberOfSellers; i++) {
             if (sellers[i].getUserName().equalsIgnoreCase(name)) return "Seller name already EXIST, please try again!";
         }
         return null;
     }
 
-    public String isExistBuyer (String name) {
+    public String isExistBuyer(String name) {
         for (int i = 0; i < numberOfBuyers; i++) {
             if (buyers[i].getUserName().equalsIgnoreCase(name)) return "Buyer name already EXIST, please try again!";
         }
@@ -100,7 +115,8 @@ public class Manager implements Manageable {
     public String isValidHistoryCartIndex(String indexCartInput, int buyerIndex) {
         try {
             int indexCart = Integer.parseInt(indexCartInput);
-            if (buyers[buyerIndex].getHistoryCartsNum() < indexCart || indexCart <= 0) throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_HISTORY_CART_INDEX.getExceptionMessage());
+            if (buyers[buyerIndex].getHistoryCartsNum() < indexCart || indexCart <= 0)
+                throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_HISTORY_CART_INDEX.getExceptionMessage());
         } catch (NumberFormatException e) {
             return ExceptionsMessages.INVALID_NUMBER_CHOICE.getExceptionMessage();
         } catch (IndexOutOfBoundsException e) {
@@ -108,11 +124,12 @@ public class Manager implements Manageable {
         }
         return null;
     }
-    
+
     public String chooseValidSeller(String indexInput) {
         try {
             int index = Integer.parseInt(indexInput);
-            if (index > numberOfSellers || index <= 0) throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_SELLER_INDEX.getExceptionMessage());
+            if (index > numberOfSellers || index <= 0)
+                throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_SELLER_INDEX.getExceptionMessage());
         } catch (IndexOutOfBoundsException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {
@@ -120,11 +137,12 @@ public class Manager implements Manageable {
         }
         return null;
     }
-    
+
     public String chooseValidBuyer(String indexInput) {
         try {
             int index = Integer.parseInt(indexInput);
-            if (index > numberOfBuyers || index <= 0) throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_BUYER_INDEX.getExceptionMessage());
+            if (index > numberOfBuyers || index <= 0)
+                throw new IndexOutOfBoundsException(ExceptionsMessages.INVALID_BUYER_INDEX.getExceptionMessage());
         } catch (IndexOutOfBoundsException e) {
             return e.getMessage();
         } catch (NumberFormatException e) {
@@ -195,7 +213,7 @@ public class Manager implements Manageable {
         }
         return sb.toString();
     }
-    
+
     public String buyersNames() {
         StringBuilder sb = new StringBuilder("Buyer's:\n--------------\n");
         for (int i = 0; i < numberOfBuyers; i++) {
@@ -207,7 +225,7 @@ public class Manager implements Manageable {
     public void addProductBuyer(int buyerIndex, int sellerIndex, int productIndex) {
         Product p1;
         if (sellers[sellerIndex].getProducts()[productIndex] instanceof ProductSpecialPackage) {
-            p1 = new ProductSpecialPackage(sellers[sellerIndex].getProducts()[productIndex],((ProductSpecialPackage) sellers[sellerIndex].getProducts()[productIndex]).getSpecialPackagePrice());
+            p1 = new ProductSpecialPackage(sellers[sellerIndex].getProducts()[productIndex], ((ProductSpecialPackage) sellers[sellerIndex].getProducts()[productIndex]).getSpecialPackagePrice());
         } else {
             p1 = new Product(sellers[sellerIndex].getProducts()[productIndex]);
         }
@@ -222,6 +240,16 @@ public class Manager implements Manageable {
             p1 = new ProductSpecialPackage(productName, productPrice, c, specialPackagePrice);
         }
         sellers[sellerIndex].addProduct(p1);
+
+        if (allProducts.length == logicProductsSize) {
+            if (allProducts.length == 0) {
+                allProducts = Arrays.copyOf(allProducts, 1);
+            }
+            allProducts = Arrays.copyOf(allProducts, allProducts.length * SIZE_INCREASE);
+
+        }
+
+        allProducts[logicProductsSize++] = p1;
         addToCategoryArray(p1);
     }
 
@@ -244,9 +272,68 @@ public class Manager implements Manageable {
         }
     }
 
+    public void printArray() {
+        for (int i = 0; i < logicProductsSize; i++) {
+            System.out.println(allProducts[i].getProductName());
+        }
+    }
+
+    public Map<String, Integer> toLinkedHashMap() {
+        Map<String, Integer> map = new HashMap<>();
+        for (Product p : allProducts) {
+            if (p != null) {
+                if (map.containsKey(p.getProductName().toLowerCase()))
+                    map.put(p.getProductName().toLowerCase(), map.get(p.getProductName().toLowerCase()) + 1);
+                else
+                    map.put(p.getProductName().toLowerCase(), 1);
+            }
+        }
+        return map;
+    }
+
+    public ArrayList<String> toArrayList(Map<String, Integer> map) {
+        ArrayList<String> arr = new ArrayList<>();
+        Set<String> set = map.keySet();
+        Iterator<String> it2 = set.iterator();
+        while (it2.hasNext()) {
+            arr.add(it2.next());
+        }
+        return arr;
+    }
+
+    public void printByListIterator(List<?> lst) {
+        ListIterator<?> it = lst.listIterator(lst.size());
+        while (it.hasPrevious()) {
+            System.out.println(it.previous());
+            it.next();
+            System.out.println(it.previous());
+        }
+    }
+
+    public SortedSet<String> ToTreeSet() {
+        SortedSet<String> sortedSet = new TreeSet<>((o1, o2) -> {
+            String lowerO1 = o1.toLowerCase();
+            String lowerO2 = o2.toLowerCase();
+
+            if (lowerO1.equals(lowerO2)) {
+                return 0;
+            }
+            int lengthDiff = lowerO1.length() - lowerO2.length();
+            if (lengthDiff != 0) {
+                return lengthDiff;
+            }
+            return lowerO1.compareTo(lowerO2);
+        });
+        for (int i = 0; i < logicProductsSize; i++) {
+            sortedSet.add(allProducts[i].getProductName().toUpperCase());
+        }
+        return sortedSet;
+    }
+
     public String pay(int buyerIndex) {
         try {
-            if (buyers[buyerIndex].getCurrentCart().getNumOfProducts() == 0) throw new EmptyCartPayException(buyers[buyerIndex].getUserName());
+            if (buyers[buyerIndex].getCurrentCart().getNumOfProducts() == 0)
+                throw new EmptyCartPayException(buyers[buyerIndex].getUserName());
         } catch (EmptyCartPayException e) {
             return e.getMessage();
         }
@@ -266,6 +353,7 @@ public class Manager implements Manageable {
     public void replaceCarts(int historyCartIndex, int buyerIndex) {
         buyers[buyerIndex].setCurrentCart(buyers[buyerIndex].getHistoryCart()[historyCartIndex]);
     }
+
 }
 
 

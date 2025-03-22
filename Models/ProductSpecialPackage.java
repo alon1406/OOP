@@ -2,7 +2,7 @@ package Models;
 
 import Enums.Category;
 
-public class ProductSpecialPackage extends Product{
+public class ProductSpecialPackage extends Product {
     private final double specialPackagePrice;
 
     public ProductSpecialPackage(String productName, double productPrice, Category category, double specialPackagePrice) {
